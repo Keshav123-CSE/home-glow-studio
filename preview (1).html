@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home Glow Studio – Design. Style. Comfort.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600;700&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold:#C9A84C; --gold-light:#E8C97A; --black:#0A0A0A;
+    --dark:#111111; --white:#F5F0E8; --muted:#888;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--black);color:var(--white);font-family:'Jost',sans-serif;overflow-x:hidden;}
+
+  /* ── INTRO ── */
+  #intro{
+    position:fixed;inset:0;z-index:9999;background:#050505;
+    display:flex;align-items:center;justify-content:center;flex-direction:column;overflow:hidden;
+  }
+  #intro canvas{position:absolute;inset:0;pointer-events:none;}
+  .intro-logo{position:relative;z-index:2;text-align:center;animation:fadeUp 1.2s ease forwards;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+  .intro-svg-logo{
+    display:block;margin:0 auto 20px;
+    width:clamp(80px,12vw,110px);
+    filter:drop-shadow(0 0 20px rgba(201,168,76,0.6));
+  }
+  .intro-logo .brand-name{
+    font-family:'Cinzel',serif;font-size:clamp(2rem,5.5vw,3.8rem);
+    color:var(--gold);letter-spacing:.32em;text-shadow:0 0 40px rgba(201,168,76,0.55);
+  }
+  .intro-logo .brand-sub{font-size:.72rem;letter-spacing:.5em;color:var(--gold-light);opacity:.7;margin-top:6px;}
+  .intro-divider{
+    width:110px;height:1px;
+    background:linear-gradient(90deg,transparent,var(--gold),transparent);
+    margin:15px auto;animation:expand 1s .5s ease forwards;transform:scaleX(0);
+  }
+  @keyframes expand{to{transform:scaleX(1)}}
+  #enter-btn{
+    position:relative;z-index:2;margin-top:44px;padding:15px 50px;
+    background:transparent;border:1px solid var(--gold);color:var(--gold);
+    font-family:'Cinzel',serif;font-size:.82rem;letter-spacing:.3em;cursor:pointer;
+    transition:color .4s;animation:fadeIn 1s .9s forwards;opacity:0;overflow:hidden;
+  }
+  @keyframes fadeIn{to{opacity:1}}
+  #enter-btn::before{
+    content:'';position:absolute;inset:0;background:var(--gold);
+    transform:scaleX(0);transform-origin:left;transition:transform .4s;z-index:-1;
+  }
+  #enter-btn:hover{color:var(--black);}
+  #enter-btn:hover::before{transform:scaleX(1);}
+  .btn-glow{position:absolute;inset:-8px;border:1px solid rgba(201,168,76,.2);animation:pulse 2s infinite;pointer-events:none;}
+  @keyframes pulse{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:.5;transform:scale(1.03)}}
+
+  /* ── CRACK ── */
+  #crack-overlay{position:fixed;inset:0;z-index:9998;pointer-events:none;display:none;}
+  .crack-top{position:absolute;top:0;left:0;right:0;height:50%;background:#050505;transform-origin:top;transition:transform .85s cubic-bezier(.77,0,.18,1);}
+  .crack-bottom{position:absolute;bottom:0;left:0;right:0;height:50%;background:#050505;transform-origin:bottom;transition:transform .85s cubic-bezier(.77,0,.18,1);}
+  .crack-line{
+    position:absolute;left:0;right:0;top:50%;height:3px;
+    background:linear-gradient(90deg,transparent,var(--gold) 20%,var(--gold-light) 50%,var(--gold) 80%,transparent);
+    box-shadow:0 0 24px var(--gold),0 0 60px rgba(201,168,76,.5);
+    transform:scaleX(0);transform-origin:center;
+    transition:transform .32s ease,opacity .2s ease;
+  }
+
+  /* ── MAIN ── */
+  #main-site{opacity:0;transition:opacity .6s ease;display:none;}
+  #main-site.visible{opacity:1;}
+
+  /* NAV */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    display:flex;align-items:center;justify-content:space-between;padding:18px 60px;
+    background:linear-gradient(180deg,rgba(0,0,0,.92) 0%,transparent 100%);backdrop-filter:blur(4px);
+  }
+  .nav-logo{display:flex;align-items:center;gap:12px;}
+  .nav-logo svg{width:40px;height:40px;}
+  .nav-logo-text .brand{font-family:'Cinzel',serif;font-size:.95rem;color:var(--gold);letter-spacing:.15em;display:block;}
+  .nav-logo-text .studio{font-size:.58rem;letter-spacing:.4em;color:var(--gold-light);opacity:.7;display:block;}
+  .nav-logo-text .tagline{font-size:.52rem;letter-spacing:.25em;color:var(--muted);display:block;}
+  .nav-links{display:flex;gap:26px;list-style:none;}
+  .nav-links a{font-size:.67rem;letter-spacing:.2em;color:var(--white);text-decoration:none;opacity:.8;transition:all .3s;position:relative;}
+  .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:1px;background:var(--gold);transform:scaleX(0);transition:transform .3s;}
+  .nav-links a:hover,.nav-links a.active{opacity:1;color:var(--gold);}
+  .nav-links a:hover::after,.nav-links a.active::after{transform:scaleX(1);}
+  .nav-ig{display:flex;align-items:center;gap:10px;border:1px solid rgba(201,168,76,.4);padding:8px 14px;border-radius:4px;text-decoration:none;transition:all .3s;}
+  .nav-ig:hover{border-color:var(--gold);background:rgba(201,168,76,.05);}
+  .nav-ig .label{font-size:.52rem;letter-spacing:.12em;color:var(--muted);display:block;}
+  .nav-ig .handle{font-size:.7rem;color:var(--gold);display:block;}
+
+  /* HERO */
+  .hero{min-height:100vh;position:relative;display:flex;align-items:flex-end;padding:0 60px 100px;overflow:hidden;}
+  .hero-bg{
+    position:absolute;inset:0;
+    background:
+      radial-gradient(ellipse at 65% 45%,rgba(201,168,76,.09) 0%,transparent 55%),
+      linear-gradient(160deg,#100c06 0%,#1e1608 35%,#0e0a06 70%,#060402 100%);
+  }
+  /* Decorative room shapes in hero */
+  .hero-bg::before{
+    content:'';position:absolute;right:5%;top:10%;width:48%;height:78%;
+    background:
+      radial-gradient(ellipse at 50% 10%,rgba(201,168,76,.18) 0%,transparent 40%),
+      linear-gradient(135deg,#1e1508 0%,#2a1e0e 30%,#120e06 60%,#0a0806 100%);
+    border-radius:2px;
+    box-shadow:
+      inset 0 1px 0 rgba(201,168,76,.25),
+      inset 0 0 80px rgba(201,168,76,.05),
+      -20px 0 60px rgba(0,0,0,.8);
+  }
+  .hero-bg::after{
+    content:'';position:absolute;right:8%;bottom:5%;width:42%;height:3px;
+    background:linear-gradient(90deg,transparent,rgba(201,168,76,.4),transparent);
+    box-shadow:0 0 20px rgba(201,168,76,.3);
+  }
+  .hero-content{position:relative;z-index:2;max-width:540px;}
+  .hero-tag{display:flex;align-items:center;gap:10px;margin-bottom:22px;color:var(--gold);font-size:.68rem;letter-spacing:.3em;}
+  .hero-tag::before{content:'✦';}
+  .hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.8rem,5.5vw,5rem);font-weight:300;line-height:1.08;margin-bottom:18px;}
+  .hero h1 em{color:var(--gold);font-style:italic;}
+  .hero p{font-size:.87rem;line-height:1.9;color:rgba(245,240,232,.7);max-width:370px;margin-bottom:36px;}
+  .hero-btns{display:flex;align-items:center;gap:28px;}
+  .btn-primary{display:flex;align-items:center;gap:12px;background:var(--gold);color:var(--black);padding:14px 28px;text-decoration:none;font-size:.7rem;letter-spacing:.2em;font-weight:500;transition:all .3s;}
+  .btn-primary:hover{background:var(--gold-light);transform:translateX(4px);}
+  .btn-secondary{display:flex;align-items:center;gap:10px;color:var(--white);text-decoration:none;font-size:.7rem;letter-spacing:.15em;transition:color .3s;}
+  .btn-secondary:hover{color:var(--gold);}
+  .play-circle{width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-size:.72rem;transition:all .3s;}
+  .btn-secondary:hover .play-circle{border-color:var(--gold);background:rgba(201,168,76,.1);}
+
+  /* SECTION COMMONS */
+  section{padding:96px 60px;}
+  .section-tag{text-align:center;font-size:.63rem;letter-spacing:.42em;color:var(--gold);margin-bottom:13px;}
+  .section-title{text-align:center;font-family:'Cormorant Garamond',serif;font-size:clamp(1.9rem,3.8vw,3rem);font-weight:300;margin-bottom:8px;}
+  .gold-ornament{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:50px;}
+  .gold-ornament::before{content:'';flex:1;max-width:80px;height:1px;background:linear-gradient(90deg,transparent,var(--gold));}
+  .gold-ornament::after{content:'';flex:1;max-width:80px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);}
+  .gold-ornament span{color:var(--gold);}
+
+  /* TRANSFORMATIONS */
+  .transformations{background:var(--dark);}
+  .rooms-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;}
+  .room-label{display:flex;align-items:center;gap:8px;font-size:.63rem;letter-spacing:.3em;color:var(--gold);margin-bottom:11px;}
+
+  /* BEFORE/AFTER */
+  .before-after{position:relative;overflow:hidden;border-radius:2px;cursor:ew-resize;height:300px;user-select:none;}
+  .ba-panel{position:absolute;inset:0;width:100%;height:100%;}
+  .ba-panel-after{clip-path:inset(0 50% 0 0);}
+  .ba-label{position:absolute;top:12px;font-size:.58rem;letter-spacing:.2em;padding:4px 8px;z-index:6;font-weight:500;}
+  .ba-before{left:12px;background:rgba(0,0,0,.65);color:var(--white);}
+  .ba-after-lbl{right:12px;background:var(--gold);color:var(--black);}
+  .ba-divider{position:absolute;top:0;bottom:0;left:50%;width:2px;background:var(--gold);z-index:5;box-shadow:0 0 8px rgba(201,168,76,.6);}
+  .ba-handle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:32px;height:32px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--black);font-size:.75rem;font-weight:bold;z-index:7;box-shadow:0 0 14px rgba(201,168,76,.5);}
+
+  /* ── CSS ROOM ART ── */
+
+  /* IMAGE-BASED BEFORE / AFTER ROOMS */
+  .room-bedroom-before,
+  .room-bedroom-after,
+  .room-bathroom-before,
+  .room-bathroom-after,
+  .room-hallway-before,
+  .room-hallway-after{
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+    background-color:#222;
+  }
+
+  .room-bedroom-before{
+    background-image:url('bedroom-before.jpeg');
+  }
+  .room-bedroom-after{
+    background-image:url('bedroom-after.png');
+  }
+  .room-bathroom-before{
+    background-image:url('bathroom-before.jpg');
+  }
+  .room-bathroom-after{
+    background-image:url('bathroom-after.png');
+  }
+  .room-hallway-before{
+    background-image:url('hallway-before.jpeg');
+  }
+  .room-hallway-after{
+    background-image:url('hallway-after.png');
+  }
+
+  /* PACKAGES */
+  .packages-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;max-width:960px;margin:0 auto;}
+  .package-card{border:1px solid rgba(201,168,76,.22);padding:36px 28px;transition:all .4s;position:relative;overflow:hidden;}
+  .package-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top,rgba(201,168,76,.06) 0%,transparent 70%);opacity:0;transition:opacity .4s;}
+  .package-card:hover::before{opacity:1;}
+  .package-card:hover{border-color:var(--gold);transform:translateY(-5px);}
+  .package-card.featured{border-color:var(--gold);background:rgba(201,168,76,.04);}
+  .pkg-name{font-size:.66rem;letter-spacing:.42em;color:var(--gold);margin-bottom:12px;}
+  .pkg-icon{font-size:1.7rem;margin-bottom:10px;}
+  .pkg-price{font-family:'Cormorant Garamond',serif;font-size:3.3rem;font-weight:600;line-height:1;margin-bottom:26px;}
+  .pkg-price span{font-size:1.4rem;color:var(--gold);}
+  .pkg-features{list-style:none;margin-bottom:28px;}
+  .pkg-features li{font-size:.78rem;color:rgba(245,240,232,.75);padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:8px;}
+  .pkg-features li::before{content:'·';color:var(--gold);font-size:1.2rem;}
+  .btn-pkg{width:100%;padding:12px;background:transparent;border:1px solid var(--gold);color:var(--gold);font-family:'Jost',sans-serif;font-size:.67rem;letter-spacing:.25em;cursor:pointer;transition:all .3s;}
+  .btn-pkg:hover{background:var(--gold);color:var(--black);}
+
+  /* WHY US */
+  .why-us{background:var(--dark);}
+  .features-grid{display:grid;grid-template-columns:repeat(5,1fr);}
+  .feature-item{text-align:center;padding:38px 18px;border-right:1px solid rgba(201,168,76,.13);transition:background .3s;}
+  .feature-item:last-child{border-right:none;}
+  .feature-item:hover{background:rgba(201,168,76,.04);}
+  .feature-icon{font-size:1.9rem;margin-bottom:12px;}
+  .feature-name{font-size:.61rem;letter-spacing:.25em;color:var(--gold);margin-bottom:6px;}
+  .feature-desc{font-size:.72rem;color:rgba(245,240,232,.5);}
+
+
+  /* ORDER FORM */
+  .order-section{
+    background:
+      radial-gradient(ellipse at 20% 10%,rgba(201,168,76,.08) 0%,transparent 45%),
+      radial-gradient(ellipse at 80% 90%,rgba(201,168,76,.06) 0%,transparent 45%),
+      #0A0A0A;
+  }
+  .order-wrap{
+    max-width:1080px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:0.9fr 1.1fr;
+    gap:34px;
+    align-items:stretch;
+  }
+  .order-info{
+    border:1px solid rgba(201,168,76,.20);
+    padding:38px;
+    background:linear-gradient(145deg,rgba(201,168,76,.08),rgba(255,255,255,.02));
+    position:relative;
+    overflow:hidden;
+  }
+  .order-info::before{
+    content:'';
+    position:absolute;
+    right:-70px;
+    top:-70px;
+    width:180px;
+    height:180px;
+    border:1px solid rgba(201,168,76,.18);
+    border-radius:50%;
+  }
+  .order-info h3{
+    font-family:'Cormorant Garamond',serif;
+    font-size:2.4rem;
+    font-weight:300;
+    margin-bottom:18px;
+  }
+  .order-info p{
+    color:rgba(245,240,232,.68);
+    font-size:.88rem;
+    line-height:1.9;
+    margin-bottom:24px;
+  }
+  .order-points{
+    list-style:none;
+    margin-top:26px;
+  }
+  .order-points li{
+    padding:12px 0;
+    border-bottom:1px solid rgba(255,255,255,.06);
+    color:rgba(245,240,232,.76);
+    font-size:.8rem;
+    letter-spacing:.08em;
+  }
+  .order-points li::before{
+    content:'✦';
+    color:var(--gold);
+    margin-right:10px;
+  }
+  .order-form{
+    border:1px solid rgba(201,168,76,.22);
+    padding:34px;
+    background:rgba(17,17,17,.92);
+    box-shadow:0 20px 80px rgba(0,0,0,.35);
+  }
+  .form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+  }
+  .form-group{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .form-group.full{grid-column:1/-1;}
+  .form-group label{
+    font-size:.62rem;
+    letter-spacing:.25em;
+    color:var(--gold);
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea{
+    width:100%;
+    background:#080808;
+    color:var(--white);
+    border:1px solid rgba(201,168,76,.24);
+    padding:13px 14px;
+    font-family:'Jost',sans-serif;
+    outline:none;
+    transition:.3s;
+  }
+  .form-group textarea{
+    min-height:120px;
+    resize:vertical;
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus{
+    border-color:var(--gold);
+    box-shadow:0 0 0 3px rgba(201,168,76,.08);
+  }
+  .file-note{
+    font-size:.68rem;
+    color:var(--muted);
+    margin-top:6px;
+    line-height:1.6;
+  }
+  .submit-order{
+    margin-top:24px;
+    width:100%;
+    border:none;
+    background:var(--gold);
+    color:var(--black);
+    padding:15px 20px;
+    font-family:'Cinzel',serif;
+    font-size:.75rem;
+    letter-spacing:.25em;
+    cursor:pointer;
+    transition:.3s;
+  }
+  .submit-order:hover{
+    background:var(--gold-light);
+    transform:translateY(-2px);
+  }
+  .form-status{
+    display:none;
+    margin-top:16px;
+    padding:12px;
+    border:1px solid rgba(201,168,76,.3);
+    color:var(--gold-light);
+    font-size:.78rem;
+    text-align:center;
+    background:rgba(201,168,76,.06);
+  }
+
+
+
+  /* FORM POPUP */
+  .request-popup{
+    position:fixed;
+    inset:0;
+    z-index:10000;
+    background:rgba(0,0,0,.72);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    backdrop-filter:blur(6px);
+  }
+  .request-popup.active{display:flex;}
+  .popup-box{
+    max-width:460px;
+    width:100%;
+    background:#0B0B0B;
+    border:1px solid rgba(201,168,76,.45);
+    padding:34px 28px;
+    text-align:center;
+    box-shadow:0 30px 90px rgba(0,0,0,.6),0 0 35px rgba(201,168,76,.08);
+    animation:popupIn .35s ease forwards;
+  }
+  @keyframes popupIn{
+    from{opacity:0;transform:scale(.92) translateY(16px);}
+    to{opacity:1;transform:scale(1) translateY(0);}
+  }
+  .popup-box .pop-icon{
+    font-size:2.2rem;
+    color:var(--gold);
+    margin-bottom:12px;
+  }
+  .popup-box h3{
+    font-family:'Cormorant Garamond',serif;
+    font-size:2rem;
+    font-weight:300;
+    margin-bottom:10px;
+  }
+  .popup-box p{
+    color:rgba(245,240,232,.7);
+    line-height:1.7;
+    font-size:.86rem;
+    margin-bottom:20px;
+  }
+  .popup-actions{
+    display:flex;
+    gap:12px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+  .popup-btn{
+    border:1px solid var(--gold);
+    padding:12px 18px;
+    background:transparent;
+    color:var(--gold);
+    cursor:pointer;
+    font-family:'Jost',sans-serif;
+    letter-spacing:.15em;
+    font-size:.68rem;
+    transition:.3s;
+  }
+  .popup-btn.primary{
+    background:var(--gold);
+    color:var(--black);
+  }
+  .popup-btn:hover{
+    background:var(--gold-light);
+    color:var(--black);
+  }
+
+  /* FOOTER */
+  footer{background:#050505;padding:56px;text-align:center;border-top:1px solid rgba(201,168,76,.14);}
+  .footer-logo{font-family:'Cinzel',serif;font-size:1.4rem;color:var(--gold);letter-spacing:.3em;margin-bottom:6px;}
+  .footer-line{width:55px;height:1px;background:var(--gold);margin:20px auto;}
+
+  /* REVEAL */
+  .reveal{opacity:0;transform:translateY(34px);transition:opacity .8s,transform .8s;}
+  .reveal.visible{opacity:1;transform:translateY(0);}
+
+  @media(max-width:900px){
+    nav{padding:14px 18px;} .nav-links{display:none;}
+    section{padding:56px 18px;} .hero{padding:0 18px 72px;}
+    .rooms-grid,.packages-grid,.order-wrap{grid-template-columns:1fr;}
+    .features-grid{grid-template-columns:repeat(2,1fr);}
+    .feature-item:nth-child(2n){border-right:none;}
+    .feature-item{border-bottom:1px solid rgba(201,168,76,.1);} .form-grid{grid-template-columns:1fr;} .order-form,.order-info{padding:26px 20px;}
+  }
+</style>
+
+<!-- 
+UPLOAD THESE IMAGE FILES TO YOUR GITHUB REPOSITORY WITH EXACT SAME NAMES:
+
+bedroom-before.jpeg
+bedroom-after.png
+bathroom-before.jpg
+bathroom-after.png
+hallway-before.jpeg
+hallway-after.png
+
+Then images will work perfectly on GitHub Pages.
+-->
+
+</head>
+<body>
+
+<!-- INTRO -->
+<div id="intro">
+  <canvas id="sparkle-canvas"></canvas>
+  <div class="intro-logo">
+    <svg class="intro-svg-logo" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M60 12L100 42V104H72V76H48V104H20V42L60 12Z" stroke="#C9A84C" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
+      <path d="M60 12C58 7 54 3 50 2" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M60 12C62 7 66 3 70 2" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round"/>
+      <ellipse cx="48" cy="4" rx="5" ry="3" transform="rotate(-25 48 4)" stroke="#C9A84C" stroke-width="1.4" fill="none"/>
+      <ellipse cx="72" cy="4" rx="5" ry="3" transform="rotate(25 72 4)" stroke="#C9A84C" stroke-width="1.4" fill="none"/>
+      <rect x="49" y="78" width="22" height="26" rx="1" stroke="#C9A84C" stroke-width="1.4" fill="rgba(201,168,76,0.07)"/>
+      <rect x="28" y="54" width="16" height="14" rx="1" stroke="#C9A84C" stroke-width="1.3" fill="rgba(201,168,76,0.08)"/>
+      <line x1="36" y1="54" x2="36" y2="68" stroke="#C9A84C" stroke-width="0.7"/>
+      <line x1="28" y1="61" x2="44" y2="61" stroke="#C9A84C" stroke-width="0.7"/>
+      <rect x="76" y="54" width="16" height="14" rx="1" stroke="#C9A84C" stroke-width="1.3" fill="rgba(201,168,76,0.08)"/>
+      <line x1="84" y1="54" x2="84" y2="68" stroke="#C9A84C" stroke-width="0.7"/>
+      <line x1="76" y1="61" x2="92" y2="61" stroke="#C9A84C" stroke-width="0.7"/>
+      <circle cx="60" cy="12" r="3" fill="#C9A84C" opacity="0.85"/>
+    </svg>
+    <div class="brand-name">HOME GLOW</div>
+    <div class="intro-divider"></div>
+    <div class="brand-sub">STUDIO</div>
+    <div style="font-size:.53rem;letter-spacing:.36em;color:var(--muted);margin-top:4px;">DESIGN · STYLE · COMFORT</div>
+  </div>
+  <button id="enter-btn"><span class="btn-glow"></span>ENTER THE EXPERIENCE</button>
+</div>
+
+<!-- CRACK -->
+<div id="crack-overlay">
+  <div class="crack-top"></div>
+  <div class="crack-line"></div>
+  <div class="crack-bottom"></div>
+</div>
+
+<!-- MAIN SITE -->
+<div id="main-site">
+
+  <nav>
+    <div class="nav-logo">
+      <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M60 12L100 42V104H72V76H48V104H20V42L60 12Z" stroke="#C9A84C" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
+        <path d="M60 12C58 7 54 3 50 2" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M60 12C62 7 66 3 70 2" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round"/>
+        <ellipse cx="48" cy="4" rx="5" ry="3" transform="rotate(-25 48 4)" stroke="#C9A84C" stroke-width="1.4" fill="none"/>
+        <ellipse cx="72" cy="4" rx="5" ry="3" transform="rotate(25 72 4)" stroke="#C9A84C" stroke-width="1.4" fill="none"/>
+        <rect x="49" y="78" width="22" height="26" rx="1" stroke="#C9A84C" stroke-width="1.4" fill="rgba(201,168,76,0.07)"/>
+        <rect x="28" y="54" width="16" height="14" rx="1" stroke="#C9A84C" stroke-width="1.3" fill="rgba(201,168,76,0.08)"/>
+        <line x1="36" y1="54" x2="36" y2="68" stroke="#C9A84C" stroke-width="0.7"/>
+        <line x1="28" y1="61" x2="44" y2="61" stroke="#C9A84C" stroke-width="0.7"/>
+        <rect x="76" y="54" width="16" height="14" rx="1" stroke="#C9A84C" stroke-width="1.3" fill="rgba(201,168,76,0.08)"/>
+        <line x1="84" y1="54" x2="84" y2="68" stroke="#C9A84C" stroke-width="0.7"/>
+        <line x1="76" y1="61" x2="92" y2="61" stroke="#C9A84C" stroke-width="0.7"/>
+        <circle cx="60" cy="12" r="3" fill="#C9A84C" opacity="0.85"/>
+      </svg>
+      <div class="nav-logo-text">
+        <span class="brand">HOME GLOW</span>
+        <span class="studio">STUDIO</span>
+        <span class="tagline">DESIGN · STYLE · COMFORT</span>
+      </div>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#hero" class="active">HOME</a></li>
+      <li><a href="#transformations">TRANSFORMATIONS</a></li>
+      <li><a href="#packages">PACKAGES</a></li>
+      <li><a href="#services">SERVICES</a></li>
+      <li><a href="#order">ORDER FORM</a></li>
+      <li><a href="#contact">CONTACT</a></li>
+    </ul>
+    <a href="https://www.instagram.com/keshav____agrawal/" target="_blank" class="nav-ig">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5">
+        <rect x="2" y="2" width="20" height="20" rx="5"/>
+        <circle cx="12" cy="12" r="4"/>
+        <circle cx="17.5" cy="6.5" r="1" fill="#C9A84C" stroke="none"/>
+      </svg>
+      <div>
+        <span class="label">CONTACT ON INSTAGRAM</span>
+        <span class="handle">@keshav____agrawal</span>
+      </div>
+    </a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-tag">PREMIUM INTERIOR REDESIGN CONCEPTS</div>
+      <h1>We Redesign Spaces,<br>You Live in <em>Style.</em></h1>
+      <p>From dull to dazzling – we recreate your rooms with modern designs that reflect your personality.</p>
+      <div class="hero-btns">
+        <a href="#packages" class="btn-primary">START YOUR TRANSFORMATION →</a>
+        <a href="#transformations" class="btn-secondary">
+          <div class="play-circle">▶</div> VIEW OUR WORK
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRANSFORMATIONS -->
+  <section class="transformations" id="transformations">
+    <div class="section-tag">TRANSFORMATIONS</div>
+    <h2 class="section-title">Before We Redesign, After We Transform</h2>
+    <div class="gold-ornament"><span>✦</span></div>
+    <div class="rooms-grid">
+
+      <div class="reveal">
+        <div class="room-label">🛏&nbsp; BEDROOM</div>
+        <div class="before-after">
+          <div class="ba-panel room-bedroom-before"></div>
+          <div class="ba-panel room-bedroom-after ba-panel-after"></div>
+          <div class="ba-label ba-before">BEFORE</div>
+          <div class="ba-label ba-after-lbl">AFTER</div>
+          <div class="ba-divider"><div class="ba-handle">⇔</div></div>
+        </div>
+      </div>
+
+      <div class="reveal" style="transition-delay:.15s">
+        <div class="room-label">🚿&nbsp; BATHROOM</div>
+        <div class="before-after">
+          <div class="ba-panel room-bathroom-before"></div>
+          <div class="ba-panel room-bathroom-after ba-panel-after"></div>
+          <div class="ba-label ba-before">BEFORE</div>
+          <div class="ba-label ba-after-lbl">AFTER</div>
+          <div class="ba-divider"><div class="ba-handle">⇔</div></div>
+        </div>
+      </div>
+
+      <div class="reveal" style="transition-delay:.3s">
+        <div class="room-label">🚪&nbsp; HALLWAY</div>
+        <div class="before-after">
+          <div class="ba-panel room-hallway-before"></div>
+          <div class="ba-panel room-hallway-after ba-panel-after"></div>
+          <div class="ba-label ba-before">BEFORE</div>
+          <div class="ba-label ba-after-lbl">AFTER</div>
+          <div class="ba-divider"><div class="ba-handle">⇔</div></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PACKAGES -->
+  <section id="packages" style="background:var(--black);">
+    <div class="section-tag">OUR PACKAGES</div>
+    <h2 class="section-title">Simple Plans, Stunning Results</h2>
+    <div class="gold-ornament"><span>✦</span></div>
+    <div class="packages-grid">
+      <div class="package-card reveal">
+        <div class="pkg-name">BASIC</div>
+        <div class="pkg-icon">🪑</div>
+        <div class="pkg-price"><span>₹</span>200</div>
+        <ul class="pkg-features">
+          <li>1 Room Redesign Concept</li>
+          <li>2D Layout + Mood Board</li>
+          <li>Color Palette Guidance</li>
+          <li>1 Revision</li>
+        </ul>
+        <button class="btn-pkg" data-package="Basic - ₹200">GET STARTED</button>
+      </div>
+      <div class="package-card featured reveal" style="transition-delay:.15s">
+        <div class="pkg-name">PREMIUM</div>
+        <div class="pkg-icon">🛋</div>
+        <div class="pkg-price"><span>₹</span>350</div>
+        <ul class="pkg-features">
+          <li>1 Room Complete Redesign</li>
+          <li>2D Layout + 3D Visualization</li>
+          <li>Material &amp; Color Selection</li>
+          <li>2 Revisions</li>
+          <li>Shopping List</li>
+        </ul>
+        <button class="btn-pkg" data-package="Premium - ₹350">GET STARTED</button>
+      </div>
+      <div class="package-card reveal" style="transition-delay:.3s">
+        <div class="pkg-name">LUXURY</div>
+        <div class="pkg-icon">👑</div>
+        <div class="pkg-price"><span>₹</span>500</div>
+        <ul class="pkg-features">
+          <li>Full Home Redesign Concept</li>
+          <li>3D Visualization</li>
+          <li>Material &amp; Color Selection</li>
+          <li>3 Revisions</li>
+          <li>Shopping List</li>
+          <li>Designer Support</li>
+        </ul>
+        <button class="btn-pkg" data-package="Luxury - ₹500">GET STARTED</button>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ORDER FORM -->
+  <section class="order-section" id="order">
+    <div class="section-tag">BOOK YOUR DESIGN</div>
+    <h2 class="section-title">Tell Us About Your Space</h2>
+    <div class="gold-ornament"><span>✦</span></div>
+
+    <div class="order-wrap reveal">
+      <div class="order-info">
+        <h3>Start Your Room Transformation</h3>
+        <p>
+          Fill this quick form with your room details. After submitting, your selected details will open in Instagram message format so you can directly send your request.
+        </p>
+        <ul class="order-points">
+          <li>Choose your room type and package</li>
+          <li>Describe your preferred interior style</li>
+          <li>Send your room photo on Instagram after submitting</li>
+          <li>Get a premium redesign concept for your space</li>
+        </ul>
+      </div>
+
+      <form class="order-form" id="designForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>YOUR NAME</label>
+            <input type="text" id="clientName" placeholder="Enter your name" required>
+          </div>
+
+          <div class="form-group">
+            <label>INSTAGRAM ID / PHONE</label>
+            <input type="text" id="clientContact" placeholder="@username or phone" required>
+          </div>
+
+          <div class="form-group">
+            <label>SPACE TYPE</label>
+            <select id="spaceType" required>
+              <option value="">Select space</option>
+              <option>Bedroom</option>
+              <option>Bathroom</option>
+              <option>Hall / Living Room</option>
+              <option>Kitchen</option>
+              <option>Balcony</option>
+              <option>Shop / Office</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>PACKAGE</label>
+            <select id="packageType" required>
+              <option value="">Select package</option>
+              <option>Basic - ₹200</option>
+              <option>Premium - ₹350</option>
+              <option>Luxury - ₹500</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>BUDGET RANGE</label>
+            <select id="budgetRange">
+              <option>Under ₹10,000</option>
+              <option>₹10,000 - ₹25,000</option>
+              <option>₹25,000 - ₹50,000</option>
+              <option>₹50,000+</option>
+              <option>Not decided yet</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>ROOM PHOTO</label>
+            <input type="file" id="roomPhoto" accept="image/*">
+            <div class="file-note">Photo will not upload automatically. Send it manually in Instagram DM after form submission.</div>
+          </div>
+
+          <div class="form-group full">
+            <label>DESIGN PREFERENCE</label>
+            <textarea id="designMessage" placeholder="Example: I want a dark luxury bedroom with warm lights, wooden texture, and hotel-like feeling."></textarea>
+          </div>
+        </div>
+
+        <button type="submit" class="submit-order">SEND REQUEST ON INSTAGRAM</button>
+        <div class="form-status" id="formStatus">Opening Instagram with your request...</div>
+      </form>
+    </div>
+  </section>
+
+
+  <!-- WHY US -->
+  <section class="why-us" id="services">
+    <div class="features-grid">
+      <div class="feature-item reveal"><div class="feature-icon">💎</div><div class="feature-name">CUSTOM DESIGNS</div><div class="feature-desc">Tailored to your style</div></div>
+      <div class="feature-item reveal" style="transition-delay:.1s"><div class="feature-icon">🏆</div><div class="feature-name">PREMIUM QUALITY</div><div class="feature-desc">Elegant &amp; long-lasting</div></div>
+      <div class="feature-item reveal" style="transition-delay:.2s"><div class="feature-icon">⏰</div><div class="feature-name">ON-TIME DELIVERY</div><div class="feature-desc">Fast &amp; reliable</div></div>
+      <div class="feature-item reveal" style="transition-delay:.3s"><div class="feature-icon">👤</div><div class="feature-name">EXPERT DESIGNERS</div><div class="feature-desc">Creative professionals</div></div>
+      <div class="feature-item reveal" style="transition-delay:.4s"><div class="feature-icon">💬</div><div class="feature-name">DEDICATED SUPPORT</div><div class="feature-desc">We're with you always</div></div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="contact">
+    <div class="footer-logo">HOME GLOW STUDIO</div>
+    <p style="letter-spacing:.3em;color:var(--gold);font-size:.58rem;">DESIGN · STYLE · COMFORT</p>
+    <div class="footer-line"></div>
+    <p style="font-size:.7rem;color:var(--muted);">© 2026 Home Glow Studio · All Rights Reserved</p>
+    <p style="margin-top:8px;"><a href="https://www.instagram.com/keshav____agrawal/" target="_blank" style="color:var(--gold);text-decoration:none;font-size:.76rem;letter-spacing:.1em;">@keshav____agrawal</a></p>
+  </footer>
+
+</div>
+
+
+<!-- REQUEST POPUP -->
+<div class="request-popup" id="requestPopup">
+  <div class="popup-box">
+    <div class="pop-icon">✦</div>
+    <h3>Request Copied</h3>
+    <p>
+      Your design request has been copied. Click the button below to open Instagram.
+      Paste the message in DM and attach your room photo.
+    </p>
+    <div class="popup-actions">
+      <a class="popup-btn primary" id="openInstagramNow" href="https://www.instagram.com/keshav____agrawal/" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:inline-block;">OPEN INSTAGRAM</a>
+      <button class="popup-btn" id="closePopup">CLOSE</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* SPARKLES */
+const canvas=document.getElementById('sparkle-canvas');
+const ctx=canvas.getContext('2d');
+let W,H,animId,particles=[];
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+resize();window.addEventListener('resize',resize);
+class Sparkle{
+  constructor(){this.reset(true);}
+  reset(imm){
+    this.x=Math.random()*W;this.y=imm?Math.random()*H:H+10;
+    this.size=Math.random()*3+.6;this.alpha=0;
+    this.maxA=Math.random()*.85+.15;this.spd=Math.random()*.013+.006;
+    this.growing=true;this.vx=(Math.random()-.5)*.5;this.vy=-(Math.random()*.6+.2);
+    this.r=185+Math.floor(Math.random()*55);this.g=135+Math.floor(Math.random()*55);
+    this.b=40+Math.floor(Math.random()*35);this.star=Math.random()>.45;
+    if(imm)this.alpha=Math.random()*this.maxA;
+  }
+  update(){
+    this.x+=this.vx;this.y+=this.vy;
+    if(this.growing){this.alpha+=this.spd;if(this.alpha>=this.maxA)this.growing=false;}
+    else{this.alpha-=this.spd*.65;if(this.alpha<=0)this.reset(false);}
+  }
+  draw(){
+    ctx.save();ctx.globalAlpha=this.alpha;
+    ctx.fillStyle=`rgb(${this.r},${this.g},${this.b})`;
+    ctx.shadowColor=`rgb(${this.r},${this.g},${this.b})`;ctx.shadowBlur=10;
+    if(this.star){
+      ctx.translate(this.x,this.y);ctx.beginPath();
+      for(let i=0;i<4;i++){ctx.rotate(Math.PI/2);ctx.lineTo(0,this.size*2.2);ctx.lineTo(this.size*.4,this.size*.4);}
+      ctx.closePath();ctx.fill();
+    }else{ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fill();}
+    ctx.restore();
+  }
+}
+for(let i=0;i<200;i++)particles.push(new Sparkle());
+function animate(){ctx.clearRect(0,0,W,H);particles.forEach(p=>{p.update();p.draw();});animId=requestAnimationFrame(animate);}
+animId=requestAnimationFrame(animate);
+
+/* CRACK TRANSITION */
+const enterBtn=document.getElementById('enter-btn');
+const intro=document.getElementById('intro');
+const crackOverlay=document.getElementById('crack-overlay');
+const crackTop=crackOverlay.querySelector('.crack-top');
+const crackBottom=crackOverlay.querySelector('.crack-bottom');
+const crackLine=crackOverlay.querySelector('.crack-line');
+const mainSite=document.getElementById('main-site');
+
+enterBtn.addEventListener('click',()=>{
+  enterBtn.style.pointerEvents='none';
+  enterBtn.style.transition='opacity .25s';enterBtn.style.opacity='0';
+  setTimeout(()=>{
+    cancelAnimationFrame(animId);
+    crackOverlay.style.display='block';mainSite.style.display='block';
+    requestAnimationFrame(()=>{crackLine.style.transition='transform .32s ease';crackLine.style.transform='scaleX(1)';});
+    setTimeout(()=>{
+      crackTop.style.transform='translateY(-100%)';crackBottom.style.transform='translateY(100%)';
+      crackLine.style.transition='transform .85s cubic-bezier(.77,0,.18,1),opacity .18s ease';
+      crackLine.style.opacity='0';
+      intro.style.transition='opacity .35s ease';intro.style.opacity='0';
+      setTimeout(()=>{mainSite.classList.add('visible');},240);
+      setTimeout(()=>{intro.style.display='none';crackOverlay.style.display='none';initScrollReveal();initBA();},950);
+    },360);
+  },260);
+});
+
+/* BEFORE/AFTER */
+function initBA(){
+  document.querySelectorAll('.before-after').forEach(c=>{
+    const after=c.querySelector('.ba-panel-after');
+    const divider=c.querySelector('.ba-divider');
+    let drag=false;
+    function set(pct){pct=Math.max(5,Math.min(95,pct));after.style.clipPath=`inset(0 ${100-pct}% 0 0)`;divider.style.left=pct+'%';}
+    set(50);
+    c.addEventListener('mousedown',()=>drag=true);
+    window.addEventListener('mouseup',()=>drag=false);
+    c.addEventListener('mousemove',e=>{if(!drag)return;const r=c.getBoundingClientRect();set(((e.clientX-r.left)/r.width)*100);});
+    c.addEventListener('touchstart',()=>drag=true,{passive:true});
+    window.addEventListener('touchend',()=>drag=false);
+    c.addEventListener('touchmove',e=>{if(!drag)return;const r=c.getBoundingClientRect();set(((e.touches[0].clientX-r.left)/r.width)*100);},{passive:true});
+  });
+}
+
+/* SCROLL REVEAL */
+function initScrollReveal(){
+  const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:.1});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+}
+
+
+
+/* PACKAGE BUTTONS + ORDER FORM TO INSTAGRAM */
+const instagramURL='https://www.instagram.com/keshav____agrawal/';
+const packageButtons=document.querySelectorAll('.btn-pkg[data-package]');
+const packageSelect=document.getElementById('packageType');
+
+packageButtons.forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const selectedPackage=btn.getAttribute('data-package');
+    if(packageSelect){
+      packageSelect.value=selectedPackage;
+    }
+    const orderSection=document.getElementById('order');
+    if(orderSection){
+      orderSection.scrollIntoView({behavior:'smooth'});
+    }
+  });
+});
+
+const requestPopup=document.getElementById('requestPopup');
+const openInstagramNow=document.getElementById('openInstagramNow');
+const closePopup=document.getElementById('closePopup');
+
+
+if(closePopup){
+  closePopup.addEventListener('click',()=>{
+    requestPopup.classList.remove('active');
+  });
+}
+
+const designForm=document.getElementById('designForm');
+if(designForm){
+  designForm.addEventListener('submit',e=>{
+    e.preventDefault();
+
+    const name=document.getElementById('clientName').value.trim();
+    const contact=document.getElementById('clientContact').value.trim();
+    const space=document.getElementById('spaceType').value;
+    const pkg=document.getElementById('packageType').value;
+    const budget=document.getElementById('budgetRange').value;
+    const message=document.getElementById('designMessage').value.trim();
+    const status=document.getElementById('formStatus');
+
+    const finalMessage =
+`Hello Home Glow Studio,
+
+I want a room redesign concept.
+
+Name: ${name}
+Contact: ${contact}
+Space Type: ${space}
+Package: ${pkg}
+Budget Range: ${budget}
+
+Design Preference:
+${message || 'I will explain my design preference in DM.'}
+
+I will send my room photo here.`;
+
+    if(navigator.clipboard){
+      navigator.clipboard.writeText(finalMessage).catch(()=>{});
+    }
+
+    status.style.display='block';
+    status.textContent='Request copied. Now click OPEN INSTAGRAM, paste the copied message, and send your room photo.';
+
+    if(requestPopup){
+      requestPopup.classList.add('active');
+    }
+  });
+}
+
+
+/* SMOOTH SCROLL */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'});}});});
+const navSecs=document.querySelectorAll('section[id],footer[id]');
+window.addEventListener('scroll',()=>{
+  let cur='';navSecs.forEach(s=>{if(window.scrollY>=s.offsetTop-130)cur=s.id;});
+  document.querySelectorAll('.nav-links a').forEach(a=>{a.classList.toggle('active',a.getAttribute('href')==='#'+cur);});
+});
+</script>
+</body>
+</html>
